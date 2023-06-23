@@ -1,0 +1,46 @@
+version: '3.10'
+services:
+  db:
+    image: postgres:15.3-bookworm
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=testdb1
+      - TZ=Europe/Warsaw
+
+    volumes:
+      - ./postgres-data:/app/postgresql/data
+      - /etc/localtime:/etc/localtime
+
+  backend-spring:
+    build:
+      context: ./spring-backend
+      dockerfile: Dockerfile
+    container_name: backend-spring
+    ports:
+       - "8080:8080"
+       - "35729:35729"
+       - "5005:5005"
+    depends_on:
+      - db
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JAVA_TOOL_OPTIONS=-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - TZ=Europe/Warsaw
+    volumes:
+      - ./spring-backend/src/main:/app/spring-backend/src/main/
+      - ./spring-backend/src/test/:/app/spring-backend/src/test/
+      - ./spring-backend/target/:/app/spring-backend/target/
+  frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+          - "3000:3000"
+        volumes:
+            - ./frontend/src:/app/frontend/src
+            - ./frontend/public:/app/frontend/public
+        depends_on:
+          - backend-spring
