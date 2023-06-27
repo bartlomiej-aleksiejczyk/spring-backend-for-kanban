@@ -39,8 +39,5 @@ services:
             dockerfile: Dockerfile
         ports:
           - "3000:3000"
-        volumes:
-            - ./frontend/src:/app/frontend/src
-            - ./frontend/public:/app/frontend/public
         depends_on:
           - backend-spring

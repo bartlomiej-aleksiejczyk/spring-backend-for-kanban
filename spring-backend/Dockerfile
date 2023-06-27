@@ -1,10 +1,10 @@
 FROM openjdk:17-alpine
-WORKDIR /app/spring-introductory-project
+WORKDIR /app/spring-backend
 
-COPY .mvn/ /app/spring-introductory-project/.mvn
-COPY mvnw pom.xml /app/spring-introductory-project/
-RUN /app/spring-introductory-project/mvnw dependency:go-offline
+COPY .mvn/ /app/spring-backend/.mvn
+COPY mvnw pom.xml /app/spring-backend/
+RUN /app/spring-backend/mvnw dependency:go-offline
 
-COPY src /app/spring-introductory-project/src
+COPY src /app/spring-backend/src
 
-CMD ["/app/spring-introductory-project/mvnw", "spring-boot:run"]
+CMD ["/app/spring-backend/mvnw", "spring-boot:run"]
